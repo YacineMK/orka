@@ -8,7 +8,7 @@ const roboto = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Planify",
+  title: "Orka",
   description: "a platform to plan and manage your logistics tasks",
 };
 

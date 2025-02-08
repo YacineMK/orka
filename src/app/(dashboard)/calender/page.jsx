@@ -101,7 +101,7 @@ export default function ModernCalendar() {
           onNavigate={(newDate) => setCurrentDate(newDate)}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: "calc(100vh - 10rem)" }}
+          style={{ height: "calc(100vh - 2rem)" }}
           onSelectEvent={handleSelectEvent}
           view={view}
           onView={setView}

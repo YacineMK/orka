@@ -31,6 +31,9 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import AvatarGroup from "@atlaskit/avatar-group";
+import Link from "next/link";
+import Image from "next/image";
 
 const mockData = [
   {
@@ -81,16 +84,74 @@ type Product = {
 const Dashboard = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
+  const [openModel, setOpenModel] = useState(false);
+
+  const avatars = [
+    {
+      name: "Ademo",
+      src: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+    },
+    {
+      name: "Soyed",
+      src: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+    },
+    {
+      name: "Artito",
+      src: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+    },
+  ];
+  const presenterName = "Supply Chain Project";
 
   return (
     <div className="space-y-4 space-x-2">
+      {openModel && (
+        <Dialog open={openModel} onOpenChange={setOpenModel}>
+          <DialogTrigger>Open</DialogTrigger>
+          <DialogContent className="bg-white w-[550px] ">
+            <DialogHeader>
+              <div className="relative mb-6">
+                <Image
+                  src="https://raw.githubusercontent.com/gilbarbara/logos/92bb74e98bca1ea1ad794442676ebc4e75038adc/logos/github-actions.svg"
+                  alt="logo"
+                  height={30}
+                  width={50}
+                  layout="fixed"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="flex flex-col">
+                <h2 className="text-xl font-semibold mb-1">
+                  Presentation started
+                </h2>
+                <div className="text-sm text-muted-foreground mb-3">by</div>
+
+                {/* Avatars */}
+                <div className="flex items-center gap-1 mb-4">
+                  <AvatarGroup data={avatars} />
+                </div>
+
+                <p className="text-sm text-muted-foreground mb-6">
+                  {presenterName} is waiting for people to join
+                </p>
+              </div>
+            </DialogHeader>
+            <DialogFooter>
+              <Button className="bg-purple">
+                {" "}
+                <Link href="/planning">Join presentation</Link>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
       <main>
         <div className="mb-2 flex items-center justify-between space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <div className="flex items-center space-x-2">
             <Dialog>
-              <DialogTrigger>
-                <Button className=" bg-purple">Add Project</Button>
+              <DialogTrigger asChild>
+                <Button variant="outline">Edit Profile</Button>
               </DialogTrigger>
               <DialogContent className="bg-white p-5">
                 <DialogHeader>
@@ -99,7 +160,7 @@ const Dashboard = () => {
                     here you can create a new project by filling the form below
                   </DialogDescription>
                 </DialogHeader>
-                <form>
+                <form className="space-y-3">
                   <div className="space-y-2">
                     <Label>Title</Label>
                     <Input
@@ -115,13 +176,20 @@ const Dashboard = () => {
                   </div>
                   <div className="space-y-2">
                     <Label>Resources Required</Label>
-                    <Input type="text" placeholder="Enter resources required" />
+                    <Input
+                      type="file"
+                      accept="csv"
+                      placeholder="Enter resources required as (.csv)"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Status</Label>
-                    <Input type="text" placeholder="Enter project status" />
+                    <Input
+                      type="file"
+                      accept="csv"
+                      placeholder="Enter project status as (.csv)"
+                    />
                   </div>
-
                   <DialogFooter className="flex justify-end">
                     <Button className="bg-purple">Save</Button>
                   </DialogFooter>
@@ -157,7 +225,7 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">50,890DA</div>
-                  <p className="text-xs  text-green-200">
+                  <p className="text-xs text-green-200">
                     +10.1% from last month
                   </p>
                 </CardContent>
@@ -254,18 +322,32 @@ const Dashboard = () => {
               <TableCell>{product.resources}</TableCell>
               <TableCell>
                 <Badge
-                  className={`${product.status === "Active" ? "bg-green-200" : product.status === "Completed" ? "bg-orange-200" : "bg-red-200"}`}
+                  className={`${
+                    product.status === "Active"
+                      ? "bg-green-200"
+                      : product.status === "Completed"
+                        ? "bg-orange-200"
+                        : "bg-red-200"
+                  }`}
                 >
                   {product.status}
                 </Badge>
               </TableCell>
               <TableCell>
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Ellipsis />
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">
+                      <Ellipsis />
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem>lunch</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setOpenModel(true);
+                      }}
+                    >
+                      launch
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Edit</DropdownMenuItem>
                     <DropdownMenuItem className="text-red-200">
                       Delete
