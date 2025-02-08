@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "Running pre-commit hook"
+
+echo "Running prettier..."
+prettier --check src
+if [ $? -ne 0 ]; then
+  echo "Prettier failed. Please fix formatting issues."
+  exit 1
+fi

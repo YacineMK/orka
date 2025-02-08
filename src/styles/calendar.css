@@ -1,0 +1,88 @@
+.modern-calendar .rbc-calendar {
+  font-family: sans-serif;
+}
+
+.modern-calendar .rbc-toolbar {
+  margin-bottom: 1rem;
+}
+
+.modern-calendar .rbc-toolbar button {
+  background-color: white;
+  color: #4a5568;
+  border: 1px solid #d2d6dc;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
+}
+
+.modern-calendar .rbc-toolbar button:hover {
+  background-color: #f7fafc;
+}
+
+.modern-calendar .rbc-toolbar button.rbc-active {
+  background-color: #4299e1;
+  color: white;
+  border-color: #4299e1;
+}
+
+.modern-calendar .rbc-month-view,
+.modern-calendar .rbc-time-view {
+  border-color: #e2e8f0;
+}
+
+.modern-calendar .rbc-day-bg {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.modern-calendar .rbc-day-bg:hover {
+  background-color: #f7fafc;
+}
+
+.modern-calendar .rbc-off-range-bg {
+  background-color: #f7fafc;
+}
+
+.modern-calendar .rbc-today {
+  background-color: #ebf8ff;
+}
+
+.modern-calendar .rbc-event {
+  background-color: #4299e1;
+  border-color: #2b6cb0;
+  border-radius: 0.25rem;
+}
+
+.modern-calendar .rbc-event-content {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.modern-calendar .rbc-show-more {
+  color: #4299e1;
+  font-weight: 500;
+}
+
+.modern-calendar .rbc-header {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* New styles for the custom toolbar */
+.modern-calendar .rbc-toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.modern-calendar .rbc-toolbar-label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
