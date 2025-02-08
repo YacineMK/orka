@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { useState, useCallback } from "react";
+import { useState, useCallback } from "react"
 import ReactFlow, {
   type Node,
   type Edge,
@@ -14,42 +14,38 @@ import ReactFlow, {
   type NodeChange,
   type EdgeChange,
   Panel,
-} from "reactflow";
-import "reactflow/dist/style.css";
-import CustomNode from "./customNode";
+  useNodesState,
+  useEdgesState,
+} from "reactflow"
+import "reactflow/dist/style.css"
+import CustomNode from "./CustomeNode"
+import { AnimatedNodeEdge, type AnimatedNodeEdge as AnimatedNodeEdgeType } from './AnimatedNodeEdge';
 
 const nodeTypes = {
   custom: CustomNode,
-};
+}
 
-const colors = ["#5500FF", "#FB9820", "#F6684F", "#ECA9C9", "#00BFFF"];
-const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
+const colors = ["#5500FF", "#FB9820", "#F6684F", "#ECA9C9", "#00BFFF"]
+const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)]
 
 // Helper function to calculate X position based on date
 const getXPositionForDate = (date: string) => {
-  const baseX = 100; // Starting X position
-  const daySpacing = 250; // Space between days
-  const day = Number.parseInt(date.split("-")[2]);
-  return baseX + (day - 1) * daySpacing;
-};
+  const baseX = 100 // Starting X position
+  const daySpacing = 250 // Space between days
+  const day = Number.parseInt(date.split("-")[2])
+  return baseX + (day - 1) * daySpacing
+}
 
 // Helper function to find available Y position for a given date
-const findAvailableYPosition = (
-  nodes: Node[],
-  date: string,
-  baseY = 100,
-  spacing = 100,
-) => {
-  const sameDataNodes = nodes.filter(
-    (node) => node.data.date === date && !node.data.isStartPoint,
-  );
-  const usedYPositions = sameDataNodes.map((node) => node.position.y);
-  let yPos = baseY;
+const findAvailableYPosition = (nodes: Node[], date: string, baseY = 100, spacing = 100) => {
+  const sameDataNodes = nodes.filter((node) => node.data.date === date && !node.data.isStartPoint)
+  const usedYPositions = sameDataNodes.map((node) => node.position.y)
+  let yPos = baseY
   while (usedYPositions.includes(yPos)) {
-    yPos += spacing;
+    yPos += spacing
   }
-  return yPos;
-};
+  return yPos
+}
 
 const initialNodes: Node[] = [
   {
@@ -151,51 +147,52 @@ const initialNodes: Node[] = [
       date: "2025-01-04",
     },
   },
-];
+]
 
 const getEdgeStyle = (sourceNode: Node) => ({
   stroke: sourceNode.data.backgroundColor,
-});
+})
 
-const createEdge = (
-  source: string,
-  target: string,
-  sourceNode: Node,
-): Edge => ({
+const edgeTypes = {
+  animatedEdge: AnimatedNodeEdge,
+}
+
+const createEdge = (source: string, target: string, sourceNode: Node): Edge => ({
   id: `e-${source}-${target}`,
   source,
   target,
-  type: "step",
-  markerEnd: {
-    type: MarkerType.ArrowClosed,
-    color: sourceNode.data.backgroundColor,
+  type: "animatedEdge",
+  data: { 
+    animationId: `${source}-${target}`,
+    animated: source === "start"  // Only animate edges from the start node
   },
+  markerEnd: { type: MarkerType.ArrowClosed, color: sourceNode.data.backgroundColor },
   style: { ...getEdgeStyle(sourceNode), strokeWidth: 2 },
-  sourceHandle: "right",
-  targetHandle: "left",
-  animated: true,
+  sourceHandle: 'right',
+  targetHandle: 'left',
 });
 
 const createInitialEdges = (nodes: Node[]): Edge[] => {
-  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+  const nodeMap = new Map(nodes.map((node) => [node.id, node]))
 
   return [
     createEdge("start", "1", nodeMap.get("start")!),
     createEdge("start", "2", nodeMap.get("start")!),
     createEdge("start", "3", nodeMap.get("start")!),
-
+    
     createEdge("3", "6", nodeMap.get("3")!),
     createEdge("4", "6", nodeMap.get("4")!),
     createEdge("5", "6", nodeMap.get("5")!),
-
+    
     createEdge("6", "7", nodeMap.get("6")!),
     createEdge("6", "8", nodeMap.get("6")!),
-
+    
     createEdge("1", "4", nodeMap.get("1")!),
     createEdge("2", "5", nodeMap.get("2")!),
-  ];
-};
+  ]
+}
 
+// Add these styles at the top of your file, after imports
 const scrollbarStyles = `
   .workflow-container {
     overflow-x: scroll;
@@ -217,63 +214,38 @@ const scrollbarStyles = `
   .workflow-container::-webkit-scrollbar-thumb:hover {
     background: #666;
   }
-`;
+`
 
 const WorkflowInner = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(createInitialEdges(initialNodes));
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) =>
-      setNodes((nds) => applyNodeChanges(changes, nds)),
-    [],
-  );
-
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) =>
-      setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
-  );
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(createInitialEdges(initialNodes))
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
 
   const onConnect = useCallback(
-    (connection: Connection) => {
-      const sourceNode = nodes.find((node) => node.id === connection.source);
-      if (!sourceNode) return;
-
-      setEdges((eds) =>
-        addEdge(
-          {
-            ...connection,
-            type: "step",
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: sourceNode.data.backgroundColor,
-            },
-            style: { ...getEdgeStyle(sourceNode), strokeWidth: 2 },
-            sourceHandle: "right",
-            targetHandle: "left",
-            animated: true,
-          },
-          eds,
-        ),
-      );
+    (params: Connection) => {
+      // Create a unique animation ID for each edge
+      const newEdge = {
+        ...params,
+        type: 'animatedEdge',
+        data: { animationId: `${params.source}-${params.target}` },
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
     },
-    [nodes],
-  );
+    [setEdges],
+  )
 
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     if (!node.data.isStartPoint) {
-      setSelectedNode(node);
+      setSelectedNode(node)
     }
-  }, []);
+  }, [])
 
   const closePopup = useCallback(() => {
-    setSelectedNode(null);
-  }, []);
+    setSelectedNode(null)
+  }, [])
 
   // Generate calendar grid
-  const calendarGrid = [];
+  const calendarGrid = []
   for (let day = 1; day <= 5; day++) {
     calendarGrid.push(
       <div
@@ -285,18 +257,16 @@ const WorkflowInner = () => {
           pointerEvents: "none",
         }}
       >
-        <div className="text-sm font-medium text-gray-500 mb-2 pl-2">
-          January {day}, 2025
-        </div>
+        <div className="text-sm font-medium text-gray-500 mb-2 pl-2">January {day}, 2025</div>
       </div>,
-    );
+    )
   }
 
   return (
     <>
       <style>{scrollbarStyles}</style>
-      <div className="workflow-container h-[500px]">
-        <div className="relative h-[500px]" style={{ width: "1300px" }}>
+      <div className="workflow-container">
+        <div className="relative h-[500px]" style={{ width: "1350px" }}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -305,7 +275,8 @@ const WorkflowInner = () => {
             onConnect={onConnect}
             onNodeClick={onNodeClick}
             nodeTypes={nodeTypes}
-            minZoom={0.4}
+            edgeTypes={edgeTypes}
+            minZoom={0.5}
             maxZoom={2}
             defaultViewport={{ x: 0, y: 0, zoom: 0.75 }}
             fitView
@@ -320,41 +291,26 @@ const WorkflowInner = () => {
           {selectedNode && (
             <div className="absolute top-0 left-0 w-full h-full bg-black/15 flex items-center justify-center">
               <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-bold mb-2 text-black">
-                  {selectedNode.data.title}
-                </h2>
+                <h2 className="text-lg font-bold mb-2 text-black">{selectedNode.data.title}</h2>
                 <p className="text-black font-bold">
-                  Date:{" "}
-                  <span className="font-normal">{selectedNode.data.date}</span>
+                  Date: <span className="font-normal">{selectedNode.data.date}</span>
                 </p>
                 {selectedNode.data.resources && (
                   <p className="text-black font-bold">
-                    Resources:{" "}
-                    <span className="font-normal">
-                      {selectedNode.data.resources}
-                    </span>
+                    Resources: <span className="font-normal">{selectedNode.data.resources}</span>
                   </p>
                 )}
                 {selectedNode.data.executionTime && (
                   <p className="text-black font-bold">
-                    Execution Time:{" "}
-                    <span className="font-normal">
-                      {selectedNode.data.executionTime}
-                    </span>
+                    Execution Time: <span className="font-normal">{selectedNode.data.executionTime}</span>
                   </p>
                 )}
                 {selectedNode.data.cost && (
                   <p className="text-black font-bold">
-                    Cost:{" "}
-                    <span className="font-normal">
-                      {selectedNode.data.cost}
-                    </span>
+                    Cost: <span className="font-normal">{selectedNode.data.cost}</span>
                   </p>
                 )}
-                <button
-                  onClick={closePopup}
-                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
-                >
+                <button onClick={closePopup} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg">
                   Close
                 </button>
               </div>
@@ -363,13 +319,14 @@ const WorkflowInner = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-const FlowDiagram = () => (
+const Workflow = () => (
   <ReactFlowProvider>
     <WorkflowInner />
   </ReactFlowProvider>
-);
+)
 
-export default FlowDiagram;
+export default Workflow
+

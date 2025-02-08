@@ -21,7 +21,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import FlowDiagram from "@/components/dashboard/components/workflow/workflow";
-import { ArrowDown } from "lucide-react";
+import Link from "next/link";
+
 
 const Dashboard = () => {
   const [view, setView] = useState("month");
@@ -78,7 +79,7 @@ const Dashboard = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             <Button className=" bg-bg text-green-200 border border-green-200">
-              Luanch Simulation
+              <Link href="/presentation">Luanch Simulation</Link>
             </Button>
           </nav>
         </div>
