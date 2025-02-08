@@ -6,12 +6,22 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { IoIosArrowDown } from "react-icons/io";
 import {
-  IoIosArrowDown,
-  IoIosArrowForward,
-  IoIosArrowBack,
-} from "react-icons/io";
+  DropdownMenuCheckboxItemProps,
+  DropdownMenuItem,
+} from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import FlowDiagram from "@/components/dashboard/components/workflow/workflow";
+import { ArrowDown } from "lucide-react";
 
 const Dashboard = () => {
   const [view, setView] = useState("month");
@@ -19,10 +29,15 @@ const Dashboard = () => {
     day: "numeric",
     month: "long",
   });
+
+  const [showStatusBar, setShowStatusBar] = useState(true);
+  const [showActivityBar, setShowActivityBar] = useState(false);
+  const [showPanel, setShowPanel] = useState(false);
+
   return (
     <div>
-      <nav className="flex justify-between items-center h-16 bg-white text-black border-b border-b-gray-100 shadow-sm px-4 md:px-8">
-        <div className="flex justify-between items-center px-1 pt-2 pb-3 w-full">
+      <nav className="flex justify-between items-center h-16 bg-white text-black border-b border-b-gray-100 shadow-sm px-2 md:px-8">
+        <div className="flex justify-between items-center px-1 pt-5 pb-7 w-full">
           <div className="flex space-x-5 items-center">
             <span className="text-lg font-medium">{label}</span>
             <Popover>
@@ -48,23 +63,27 @@ const Dashboard = () => {
               </PopoverContent>
             </Popover>
           </div>
-          <div className="flex gap-2 items-center justify-end px-5">
-            <button
-              type="button"
-              className="bg-[#DCE7FF] flex justify-center items-center text-2xl px-2 py-2 rounded-md text-blue-200"
-            >
-              <IoIosArrowBack />
-            </button>
-            <button
-              type="button"
-              className="bg-[#DCE7FF] flex justify-center items-center text-2xl px-2 py-2 rounded-md text-blue-200"
-            >
-              <IoIosArrowForward />
-            </button>
-          </div>
+          <nav className="flex space-x-3 items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className=" flex items-center">
+                  Optimise <IoIosArrowDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-44 space-y-2 px-2">
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>By Time</DropdownMenuItem>
+                <DropdownMenuItem>By Ressources</DropdownMenuItem>
+                <DropdownMenuItem>By Cost</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button className=" bg-bg text-green-200 border border-green-200">
+              Luanch Simulation
+            </Button>
+          </nav>
         </div>
       </nav>
-      <div className="shadow-sm p-4 w-full">
+      <div className="shadow-sm p-4 w-full mt-[40px]">
         <FlowDiagram />
       </div>
     </div>

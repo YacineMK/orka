@@ -25,21 +25,21 @@ const localizer = momentLocalizer(moment);
 const events = [
   {
     id: 1,
-    title: "Project Kickoff",
-    start: new Date(2023, 5, 1, 9, 0),
-    end: new Date(2023, 5, 1, 11, 0),
+    title: "Warehouse Inventory Check",
+    start: new Date(2025, 1, 2, 9, 0),
+    end: new Date(2025, 1, 4, 11, 0),
   },
   {
     id: 2,
-    title: "Team Meeting",
-    start: new Date(2023, 5, 3, 14, 0),
-    end: new Date(2023, 5, 3, 15, 30),
+    title: "Fleet Maintenance Inspection",
+    start: new Date(2025, 1, 12, 14, 0),
+    end: new Date(2025, 1, 12, 15, 30),
   },
   {
     id: 3,
-    title: "Client Presentation",
-    start: new Date(2023, 5, 5, 10, 0),
-    end: new Date(2023, 5, 5, 12, 0),
+    title: "Supplier Delivery Coordination",
+    start: new Date(2025, 1, 14, 10, 0),
+    end: new Date(2025, 1, 15, 12, 0),
   },
 ];
 

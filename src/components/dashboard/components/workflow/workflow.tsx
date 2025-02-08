@@ -295,8 +295,8 @@ const WorkflowInner = () => {
   return (
     <>
       <style>{scrollbarStyles}</style>
-      <div className="workflow-container">
-        <div className="relative h-[500px]" style={{ width: "1350px" }}>
+      <div className="workflow-container h-[800px]">
+        <div className="relative h-[500px]" style={{ width: "1300px" }}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
